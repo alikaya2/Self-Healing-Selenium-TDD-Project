@@ -1,0 +1,63 @@
+services:
+
+  postgres-db:
+    image: postgres:15.5-alpine
+    container_name: postgres-db
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_DB=healenium
+      - POSTGRES_USER=healenium_user
+      - POSTGRES_PASSWORD=YDk2nmNs4s9aCP6K
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - healenium-network
+
+  healenium-backend:
+    platform: linux/amd64
+    image: healenium/hlm-backend:3.4.8
+    container_name: healenium-backend
+    ports:
+      - "7878:7878"
+    depends_on:
+      - postgres-db
+    environment:
+      - SPRING_POSTGRES_DB=healenium
+      - SPRING_POSTGRES_SCHEMA=healenium
+      - SPRING_POSTGRES_USER=healenium_user
+      - SPRING_POSTGRES_PASSWORD=YDk2nmNs4s9aCP6K
+      - SPRING_POSTGRES_DB_HOST=postgres-db
+      - HL_IMITATOR_URL=http://healenium-imitator:8000
+      - HL_FIND_ELEMENTS_TIMEOUT=10
+      - HL_IMPLICIT_WAIT=5
+      - HL_SCREENSHOT_PATH=/opt/screenshots
+      - HL_REPORT_PATH=/opt/reports
+      - HL_LOG_LEVEL=INFO
+    volumes:
+      - ./target/screenshots:/opt/screenshots
+      - ./target/healenium-reports:/opt/reports
+    networks:
+      - healenium-network
+
+  healenium-imitator:
+    platform: linux/amd64
+    image: healenium/hlm-selector-imitator:1.6
+    container_name: healenium-imitator
+    ports:
+      - "8000:8000"
+    environment:
+      - HL_IMITATOR_URL=http://healenium-imitator:8000
+      - HL_LOG_LEVEL=INFO
+    networks:
+      - healenium-network
+
+networks:
+  healenium-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  screenshots:
+  reports: 

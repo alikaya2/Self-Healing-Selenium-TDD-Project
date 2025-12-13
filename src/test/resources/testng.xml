@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd">
+<suite name="Selenium TDD Test Suite" verbose="1">
+    
+    <listeners>
+        <listener class-name="driver.Driver"/>
+    </listeners>
+    
+    <test name="HomePage Tests" preserve-order="true">
+        <classes>
+            <class name="tests.HomePageTest">
+                <methods>
+                    <include name="homePageTitleShouldNotBeEmpty"/>
+                    <include name="homePageShouldBeLoaded"/>
+                    <include name="homePageShouldHaveMainContent"/>
+                    <include name="homePageShouldHaveNavigation"/>
+                    <include name="homePageShouldHaveSearchBox"/>
+                    <include name="homePageShouldHaveLoginButton"/>
+                    <include name="homePageShouldHaveCartButton"/>
+                </methods>
+            </class>
+        </classes>
+    </test>
+
+</suite> 
